@@ -1,0 +1,3 @@
+#!/bin/bash
+repotp="-j4 -f --force-sync --no-tags"
+if [ "$1" == "t" ]; then repo --trace sync -l $repotp; else repo sync $repotp; fi;

@@ -1,0 +1,268 @@
+#!/bin/bash
+
+color_failed=$'\E'"[0;31m"
+color_success=$'\E'"[0;32m"
+color_reset=$'\E'"[00m"
+
+if [ -z $T ]; then T=`pwd`; fi
+if [ -z "${USE_NINJA}" ]; then USE_NINJA=true; else LOGD="| tee logs/$n.log"; fi
+NOP=$(nproc --all)
+
+function secp() {
+	local mkf=`pwd`/build/core/version_defaults.mk
+	if [ -e $mkf ]; then
+	echo `cat $mkf | grep "PLATFORM_SECURITY_PATCH :="`
+	fi;
+}
+function findvars() {
+	if [ ! -e .localconfig ] || [ "`cat .localconfig | grep "$1=" | cut -d '=' -f 2`" == "" ]; then
+		echo "Enter $1:";
+		read tmpvar; echo "$1=$tmpvar" >> .localconfig;
+	fi
+	eval $1="`cat .localconfig | grep "$1=" | cut -d '=' -f 2`";
+}
+function setconfig() {
+echo $1
+	varname="`echo "$1" | cut -d '=' -f 1`";
+	varvalue="`echo "$1" | cut -d '=' -f 2`";
+	findvars $varname; oldv=${!varname}
+	$echo sed -i "s/$oldv/$varvalue/g" .localconfig
+	findvars $varname;
+}
+function buildnum() {
+	mkdir -p logs;
+    local varlist="$name real_$name";
+    for o in $varlist
+    do
+	 if [ ! -e logs/$o ]; then n=1; else n=$((`cat logs/$o` + 1)); fi; echo $n > logs/$o;
+    done;
+};
+function toolchains_links()
+{
+	local gccl=prebuilts/gcc/linux-x86
+	for j in arm aarch64
+	do
+	 mkdir -p $gccl/$j
+	 for p in `ls /home/ksrt12/UBERTC/out/$j* -d`; do
+	  if [ ! -d "$gccl/$j/$(basename $p)" ]; then ln -sf ~/UBERTC/out/$(basename $p) $gccl/$j/$(basename $p);fi;
+	 done
+	done
+};
+function rme() {
+	if [ -n "`find . -maxdepth 1 -empty`" ]; then
+	find . -maxdepth 1 -empty | xargs rm -r ; fi
+};
+function findconfig() {
+	vars="rom dev type"
+	for var in $vars
+	do
+	 findvars $var;
+	done
+	unset var;
+	unset tmpvar;
+	rm -rf output; ln -sf out/target/product/$dev output
+	if [ ! -d op ]; then ln -sf out/target/product op; fi
+	name=$rom\_$dev
+	if [ -n "$name" ]; then
+		if [ ! -d device/apps ]; then ln -sf ~/apps device/apps; fi
+		#if [ ! -d vendor/huawei ]; then ln -sf ~/honor/huawei vendor/huawei; fi
+		toolchains_links;
+		export LDEV=$dev;
+	else
+		echo "${color_failed} Fatal error: var list is empty! Enter vasr manually by running 'findconfig'";
+		sleep 5;exit 5;
+	fi
+};
+
+function hmmm() {
+
+echo "Look at the source to view more functions. The complete list is:"
+
+	local ilist="buildnum all"
+    for i in `cat ~/bin/build | sed -n "/^[[:blank:]]*function /s/function \([a-z_]*\).*/\1/p" | sort | uniq`; do
+      if [ "$i" != "buildnum" ] && [ "$i" != "all" ]; then echo "   $i";fi
+    done #| column
+}
+
+function tmr()
+{
+	if [ -z $task ]; then task=task; fi
+    local start_time=$(date +"%s")
+    $@
+    local ret=$?
+    local end_time=$(date +"%s")
+    local tdiff=$(($end_time-$start_time))
+    local hours=$(($tdiff / 3600 ))
+    local mins=$((($tdiff % 3600) / 60))
+    local secs=$(($tdiff % 60))
+    echo
+    if [ $ret -eq 0 ] ; then
+        echo -n "${color_success}#### $task completed successfully "
+    else
+        echo -n "${color_failed}#### $task failed to build some targets "
+    fi
+    if [ $hours -gt 0 ] ; then
+        printf "(%02g:%02g:%02g (hh:mm:ss))" $hours $mins $secs
+    elif [ $mins -gt 0 ] ; then
+        printf "(%02g:%02g (mm:ss))" $mins $secs
+    elif [ $secs -gt 0 ] ; then
+        printf "(%s seconds)" $secs
+    fi
+    echo " ####${color_reset}"
+    echo
+    return $ret
+};
+function killjack() {
+	jack-admin kill-server &>/dev/null;
+};
+function killjava() {
+if [ -n "`ps ax | grep java | grep -v 'grep' | cut -d '?' -f1`" ];then
+	ps ax | grep java | grep -v 'grep' | cut -d '?' -f1 | xargs kill -9
+fi
+};
+function moka() {
+	$echo tmr schedtool -B -n 10 -e ionice -n 7 make -C $T -j$NOP "$@"
+};
+function reposyncf() {
+	local opt=""; local rmlist=$@;
+	local comm="repo sync -c -j$NOP -f --force-sync --no-clone-bundle --no-tags"
+	for arg in $@; do
+	case $arg in
+		-t|t) local comm="repo --trace sync -l --no-tags " #$2 $3 $4 $5 $6 $7 $8 $9;
+			if [ -n "$2" ]; then a=b; fi;;
+		r) a=c
+			;;
+		h) for rmf in $rmlist; do if [ "$rmf" != "h" ] && [ "$rmf" != "r" ]; then $echo rm -rf $rmf;fi;done;;
+		*) if [ "$arg" != "r" ]; then opt="$opt $arg "; fi #repo sync --no-tags -j$NOP --force-sync -f $@;
+			if [ -n "$1" ]; then a=b; fi;;
+	esac
+	done
+	$echo $comm $opt
+	#secp `pwd`;
+	if [ "$a" != "b" ]; then rm -rf device/*/*/patches/{,*}/apply; else echo not rm; fi
+};
+function syncall() {
+	dir="aex los RR o slim"
+	for g in $dir
+	do
+	echo -n "${color_success} ========     $g     ====================${color_reset}"
+	echo ""
+	cd ~/$g;
+	tmr reposyncf $2;
+	cd - > /dev/null
+	done
+	echo "-------- total ---------"
+};
+function chkadb() {
+	echo `adb devices | grep -w $1`
+	if [ -n "`adb devices | grep -w $1`" ]; then
+	return 1
+	else return 124; fi
+}
+function sideload() {
+	chkadb sideload;if [ $? == 1 ];then echo "sideload - ok"; else
+	chkadb recovery;if [ $? == 1 ];then echo "recovery - ok; Запустите sideload"; adb wait-\for-sideload; sideload; else
+	chkadb device;if [ $? == 1 ];then echo "device - ok; Запуск sideload";adb reboot sideload; adb wait-\for-sideload; sideload; else
+	echo "Подключите устройство"; adb wait-\for-any ;sideload;
+	fi;fi;fi
+};
+function flashzip() {
+    if [ -n $1 ]; then
+		filezip=$1
+	elif [ -n "`ls output/*.md5sum`" ] && [ -z $1 ];
+		then filezip=$(echo `ls output/*.md5sum -t | sed -e 's/.md5sum//g'` | cut -d' ' -f1);
+	else
+		echo "flash zip now?";
+		read -r -t 60 filezip || exit
+	fi
+	if [ -e $filezip ]; then
+		sideload;
+		$echo adb sideload $filezip;
+		adb wait-\for-recovery;
+		adb reboot;
+	else
+		echo "${color_failed} файл $filezip не найден!  ${color_reset}";
+	fi
+};
+function flashapk() {
+	adb remount;
+    for apk in $@
+    do
+	if [ -z $apk ];then read -r apk; fi
+    $echo adb push /home/ksrt12/havoc/out/target/product/gemini/system/priv-app/$apk/$apk.apk /system/priv-app/$apk/$apk.apk;
+	done;
+	adb reboot;
+};
+function all() {
+	if [ "$crom" == "aosp" ] || [ "$crom" == "aex" ]; then fmka=moka; else fmka=mka;fi
+	case $1 in
+	omx) cd op || exit; rmrf libstagefright;cd -; $fmka libstagefright_omx libstagefright_omx_32 libstagefright libstagefright_32 libstagefrighthw libstagefrighthw_32;
+	if [ $? == 0 ]; then
+	adb remount;
+	adb push output/system/lib/libstagefright_omx.so /system/lib;
+	adb push output/system/lib64/libstagefright_omx.so /system/lib64;
+	adb push output/system/lib/libstagefright.so /system/lib;
+	adb push output/system/lib64/libstagefright.so /system/lib64;
+	adb push output/system/lib/libstagefrighthw.so /system/lib;
+	adb push output/system/lib64/libstagefrighthw.so /system/lib64;
+	adb reboot; fi;;
+	s) jack-admin start-server;;
+	*) $fmka $@; killjack;;
+esac;
+};
+#clear;
+function b()
+{
+rme;
+case $1 in
+	ini) if [ "$2" == "set" ]; then setconfig $3; fi
+		findconfig; . bu*/en*; lunch $name-$type;
+		case $2 in
+			set) #nothing
+				;;
+			eng) all otapackage;;
+			*) $2; $3; $4; $5; $6; $7; $8; $9;;
+		esac;;
+    fz) flashzip $2;;
+	ra) tmr syncall;;
+	r) if [ -d .repo ]; then tmr reposyncf $@; else echo "Cannot find .repo"; fi;;
+	c) b installclean; b;;
+    info) echo `cat .localconfig`;;
+	*)
+		if [ -d build ] && [ -d vendor ] && [ -e Makefile ]; then
+			findconfig;
+			. bu*/en*; T=`gettop`; # export LANG=C;
+			if [ -n "$1" ] || ([ "$crom" == "aosp" ] && ([ ! -d vendor/syberia ] && [ ! -d vendor/havoc ])); then
+				lunch $name-$type;
+				if [ "$1" == "d" ]; then development/scripts/stack;
+				else
+				if [ "$rom" == "aosp" ] && [ -z "$1" ]; then all otapackage; else all $@; fi;
+				fi;
+			else
+				case $rom in
+				pa) ./rom-build.sh $dev;;
+				aex) lunch $name-$type; tmr mka aex;;
+				*) echo "brunch $LDEV"; brunch $dev $LOGD;;
+				esac
+    if [ $? -eq 0 ] ; then buildnum; fi;
+			fi; killjack; killjava;
+		fi;;
+esac;
+}
+function operat() {
+cat <<EOD
+-z # строка пуста
+-n # строка не пуста
+=, (==) # строки равны
+!= # строки неравны
+-eq # равно
+-ne # неравно
+-lt,(< ) # меньше
+-le,(<=) # меньше или равно
+-gt,(>) #больше
+-ge,(>=) #больше или равно
+! #отрицание логического выражения
+-a,(&&) #логическое «И»
+-o,(||) # логическое «ИЛИ»
+EOD
+}

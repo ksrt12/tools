@@ -1,0 +1,4 @@
+#!/bin/bash
+if [ "$1" == "" ]; then echo "Usage: cimg <sparse_image_files> (<raw_image_file>)"; else
+if [ "$2" != "" ]; then ~/bin/simg2img $1 $2; else ~/bin/simg2img $1 raw.$1;fi
+fi

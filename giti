@@ -1,0 +1,22 @@
+#!/bin/bash
+
+function fp() {
+git format-patch -$1;
+}
+git add .;
+
+case $1 in
+ch) git cherry-pick -s -S $2 $3 $4;;
+am) git am -3 $2;;
+m) git merge --signoff $2;;
+ra) git remote add $2 $3;;
+c) rm -rf *.patch; git add .; git commit -S --signoff --amend;;
+f) git fetch --tags caf;;
+*)
+ read commitmsg
+ git commit -S --signoff -am "$commitmsg"
+ case $1 in
+ u) git push origin $2;;
+ p) if [ "$2" != "" ]; then n=$2; else n=1; fi; fp $n;;
+ esac;;
+esac

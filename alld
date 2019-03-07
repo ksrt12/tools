@@ -1,0 +1,20 @@
+#!/bin/bash
+case $1 in
+h|help|--help|help|-h|-help)
+echo "Использование:"
+echo "  $0 ваш_файл ключ"
+echo ""
+echo "Ключи:"
+echo " a - вывод всей информации readelf"
+echo " с - просмотр содежримого раздела комментария objdump"
+echo ""
+;;
+*)
+case $2 in
+a) readelf -d $1;;
+c) objdump -s $1;; #--section .comment $1 ;;
+*) readelf -d $1 | grep "\(NEEDED\)" | sed -r "s/.*\[(.*)\]/\1/";;
+esac
+echo →
+;;
+esac

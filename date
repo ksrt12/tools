@@ -1,0 +1,4 @@
+#!/bin/bash
+#export LC_TIME=en_US.UTF-8
+/bin/date "$@" | sed -e 's/NOVT/ITMO/g' | sed -e 's/+06/ITMO/g' | sed -e 's/+07/ITMO/g' | sed -e 's/MSK/SPB/g'
+export LC_TIME=ru_RU.UTF-8

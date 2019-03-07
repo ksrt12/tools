@@ -1,0 +1,7 @@
+#!/bin/bash
+if [ "$1" != "" ]; then
+for del in $@; do
+for i in `find -name *$del*`; do echo $i; rm -rf $i; done
+done
+else echo "Использование: $0 маска файла1, маска файла2, ..."
+fi

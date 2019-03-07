@@ -1,0 +1,6 @@
+#!/bin/bash
+echo 23 <&/dev/null;
+while [ $? != 0 ]
+do
+axel -n $@
+done
