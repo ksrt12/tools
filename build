@@ -125,13 +125,14 @@ function moka() {
 };
 function reposyncf() {
 	local opt=""; local rmlist=$@;
-	local comm="repo sync -c -j$NOP -f --force-sync --no-clone-bundle --no-tags"
+	local comm="repo sync -c -j$NOP -f --force-sync --no-clone-bundle --no-tags --prune"
 	for arg in $@; do
 	case $arg in
 		-t|t) local comm="repo --trace sync -l --no-tags " #$2 $3 $4 $5 $6 $7 $8 $9;
 			if [ -n "$2" ]; then a=b; fi;;
 		r) a=c
 			;;
+        n) comm="$comm -n"; a=b ;;
 		h) for rmf in $rmlist; do if [ "$rmf" != "h" ] && [ "$rmf" != "r" ]; then $echo rm -rf $rmf;fi;done;;
 		*) if [ "$arg" != "r" ]; then opt="$opt $arg "; fi #repo sync --no-tags -j$NOP --force-sync -f $@;
 			if [ -n "$1" ]; then a=b; fi;;
@@ -167,10 +168,10 @@ function sideload() {
 	fi;fi;fi
 };
 function flashzip() {
-    if [ -n $1 ]; then
-		filezip=$1
-	elif [ -n "`ls output/*.md5sum`" ] && [ -z $1 ];
+	if [ -n "`ls output/*.md5sum`" ] && [ -z $1 ];
 		then filezip=$(echo `ls output/*.md5sum -t | sed -e 's/.md5sum//g'` | cut -d' ' -f1);
+	elif [ -n $1 ]; then
+		filezip=$1;
 	else
 		echo "flash zip now?";
 		read -r -t 60 filezip || exit
@@ -191,7 +192,8 @@ function flashapk() {
 	if [ -z $apk ];then read -r apk; fi
     $echo adb push /home/ksrt12/havoc/out/target/product/gemini/system/priv-app/$apk/$apk.apk /system/priv-app/$apk/$apk.apk;
 	done;
-	adb reboot;
+	read -r -t 10 rb || exit;
+    if [ "$rb" == "y" ]; then adb reboot; fi
 };
 function all() {
 	if [ "$crom" == "aosp" ] || [ "$crom" == "aex" ]; then fmka=moka; else fmka=mka;fi
