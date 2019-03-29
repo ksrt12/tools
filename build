@@ -140,7 +140,7 @@ function reposyncf() {
 	done
 	$echo $comm $opt
 	#secp `pwd`;
-	if [ "$a" != "b" ]; then rm -rf device/*/*/patches/{,*}/apply; else echo not rm; fi
+	if [ "$a" != "b" ]; then rm -rf patches/{,*}/apply; else echo not rm; fi
 };
 function syncall() {
 	dir="aex los RR o slim"
@@ -194,6 +194,24 @@ function flashapk() {
 	done;
 	read -r -t 10 rb || exit;
     if [ "$rb" == "y" ]; then adb reboot; fi
+};
+function flashimg() {
+	if [ -d build ] && [ -d vendor ] && [ -e Makefile ]; then
+	findconfig; fi
+    if [ -e $2 ]; then img=$2; else
+	img=out/target/product/$dev/$1.img; fi
+	if [ ! -e $img ]; then read -r img; fi
+	if [ -e $img ]; then
+	adb reboot bootloader;
+	if [ "$3" != "" ]; then	$echo fastboot flash $1 $img; fi
+	$echo fastboot boot $img;
+	fi;
+};
+function flashboot() {
+	flashimg boot $1 $2
+};
+function flashrec() {
+	flashimg recovery $1 $2
 };
 function all() {
 	if [ "$crom" == "aosp" ] || [ "$crom" == "aex" ]; then fmka=moka; else fmka=mka;fi
