@@ -53,6 +53,7 @@ function rme() {
 	find . -maxdepth 1 -empty | xargs rm -r ; fi
 };
 function findconfig() {
+if [ -d build ] && [ -d vendor ] && [ -e Makefile ]; then
 	vars="rom dev type"
 	for var in $vars
 	do
@@ -71,7 +72,8 @@ function findconfig() {
 	else
 		echo "${color_failed} Fatal error: var list is empty! Enter vasr manually by running 'findconfig'";
 		sleep 5;exit 5;
-	fi
+	fi;
+fi
 };
 
 function hmmm() {
@@ -189,17 +191,18 @@ function flashapk() {
 	adb remount;
     for apk in $@
     do
-	if [ -z $apk ];then read -r apk; fi
-    $echo adb push /home/ksrt12/havoc/out/target/product/gemini/system/priv-app/$apk/$apk.apk /system/priv-app/$apk/$apk.apk;
-	done;
-	read -r -t 10 rb || exit;
+    if [ -z $apk ];then read -r apk; fi
+    if [ -d output/system/priv-app/$apk ]; then path="priv-";
+    elif [ -d output/system/app/$apk ]; then path="";
+    fi
+    $echo adb push output/system/$path\app/$apk/$apk.apk /system/$path\app/$apk/$apk.apk;
+    done;
+    read -r -t 10 rb || exit;
     if [ "$rb" == "y" ]; then adb reboot; fi
 };
 function flashimg() {
-	if [ -d build ] && [ -d vendor ] && [ -e Makefile ]; then
-	findconfig; fi
     if [ -e $2 ]; then img=$2; else
-	img=out/target/product/$dev/$1.img; fi
+	img=output/$1.img; fi
 	if [ ! -e $img ]; then read -r img; fi
 	if [ -e $img ]; then
 	adb reboot bootloader;
@@ -248,9 +251,7 @@ case $1 in
 	r) if [ -d .repo ]; then tmr reposyncf $@; else echo "Cannot find .repo"; fi;;
 	c) b installclean; b;;
     info) echo `cat .localconfig`;;
-	*)
-		if [ -d build ] && [ -d vendor ] && [ -e Makefile ]; then
-			findconfig;
+	*)		findconfig;
 			. bu*/en*; T=`gettop`; # export LANG=C;
 			if [ -n "$1" ] || ([ "$crom" == "aosp" ] && ([ ! -d vendor/syberia ] && [ ! -d vendor/havoc ])); then
 				lunch $name-$type;
@@ -265,8 +266,7 @@ case $1 in
 				*) echo "brunch $LDEV"; brunch $dev $LOGD;;
 				esac
     if [ $? -eq 0 ] ; then buildnum; fi;
-			fi; killjack; killjava;
-		fi;;
+			fi; killjack; killjava;;
 esac;
 }
 function operat() {
