@@ -69,6 +69,7 @@ if [ -d build ] && [ -d vendor ] && [ -e Makefile ]; then
 		#if [ ! -d vendor/huawei ]; then ln -sf ~/honor/huawei vendor/huawei; fi
 		toolchains_links;
 		export LDEV=$dev;
+		export LROM=$rom;
 	else
 		echo "${color_failed} Fatal error: var list is empty! Enter vasr manually by running 'findconfig'";
 		sleep 5;exit 5;
@@ -249,7 +250,8 @@ case $1 in
     fz) flashzip $2;;
 	ra) tmr syncall;;
 	r) if [ -d .repo ]; then tmr reposyncf $@; else echo "Cannot find .repo"; fi;;
-	c) b installclean; b;;
+    i) b installclean;;
+	c) b i; b;;
     info) echo `cat .localconfig`;;
 	*)		findconfig;
 			. bu*/en*; T=`gettop`; # export LANG=C;

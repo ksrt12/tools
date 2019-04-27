@@ -1,6 +1,10 @@
 #!/bin/bash
 case $1 in
-	*cherryplus*) path=cherryplus;;
-	*gemini*) path=gemini;;
+	*cherryplus*) dev=cherryplus;;
+	*gemini*) dev=gemini;;
 esac
-$echo rsync --progress -e ssh $1 ksrt12@frs.sourceforge.net:/home/frs/project/havoc-gemini/$path/
+case $1 in
+	*yberia*) rom=syberia;;
+	*avoc*) rom=havoc;;
+esac
+$echo rsync --progress -e ssh $1 ksrt12@frs.sourceforge.net:/home/frs/project/havoc-gemini/$rom/$dev/

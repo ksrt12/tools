@@ -1,22 +1,26 @@
 #!/bin/bash
 
 function fp() {
-git format-patch -$1;
+	git format-patch -$1;
 }
-git add .;
+function commsg() {
+	args=
+	for arg in $@
+	do
+	if [ "$arg" != "c" ]; then if [ "$arg" != "p" ]; then args="$args$arg " ; fi; fi
+	done
+	if [ -z "$args" ]; then read commitmsg; else commitmsg="$args"; fi
+	$echo git commit -sS -m "$commitmsg"
+}
 
 case $1 in
-ch) git cherry-pick -s -S $2 $3 $4;;
-am) git am -3 $2;;
-m) git merge --signoff $2;;
-ra) git remote add $2 $3;;
-c) rm -rf *.patch; git add .; git commit -S --signoff --amend;;
-f) git fetch --tags caf;;
-*)
- read commitmsg
- git commit -S --signoff -am "$commitmsg"
- case $1 in
- u) git push origin $2;;
- p) if [ "$2" != "" ]; then n=$2; else n=1; fi; fp $n;;
- esac;;
+	ch) git cherry-pick -sS $2 $3 $4;;
+	am) git am -3 $2;;
+	m) git merge --signoff $2;;
+	ra) git remote add $2 $3;;
+	c) commsg $@;;
+	a) rm -rf *.patch; git add .; git commit -S --signoff --amend;;
+	*now) git commit --amend --no-edit --date=now;;
+	f) git fetch --tags caf;;
+	p) commsg $@; git format-patch -$2;;
 esac

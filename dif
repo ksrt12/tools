@@ -1,2 +1,2 @@
 #!/bin/bash
-diff -ru $sybhome/$1 $1 >d.diff
+diff -ru $sybhome/$1 $1 -x .git >d.diff
