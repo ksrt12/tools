@@ -1,2 +1,11 @@
 #!/bin/bash
-diff -ru $sybhome/$1 $1 -x .git >d.diff
+function diffrux()
+{
+diff -ru $1 $2 -x .git >d.diff
+}
+
+if [ -d build ] && [ -d vendor ] && [ -e Makefile ] && [ -z $2 ]; then
+diffrux $sybhome/$1 $1;
+elif [ -n $2 ]; then
+diffrux $1 $2;
+fi
