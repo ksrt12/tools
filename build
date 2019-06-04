@@ -31,11 +31,11 @@ echo $1
 }
 function buildnum() {
 	mkdir -p logs;
-    local varlist="$name real_$name";
-    for o in $varlist
-    do
+	local varlist="$name real_$name";
+	for o in $varlist
+	do
 	 if [ ! -e logs/$o ]; then n=1; else n=$((`cat logs/$o` + 1)); fi; echo $n > logs/$o;
-    done;
+	done;
 };
 function toolchains_links()
 {
@@ -53,7 +53,7 @@ function rme() {
 	find . -maxdepth 1 -empty | xargs rm -r ; fi
 };
 function findconfig() {
-if [ -d build ] && [ -d vendor ] && [ -e Makefile ]; then
+if [ -d build ] && [ -e Android.bp ] && [ -e Makefile ]; then
 	vars="rom dev type"
 	for var in $vars
 	do
@@ -82,38 +82,38 @@ function hmmm() {
 echo "Look at the source to view more functions. The complete list is:"
 
 	local ilist="buildnum all"
-    for i in `cat ~/bin/build | sed -n "/^[[:blank:]]*function /s/function \([a-z_]*\).*/\1/p" | sort | uniq`; do
-      if [ "$i" != "buildnum" ] && [ "$i" != "all" ]; then echo "   $i";fi
-    done #| column
+	for i in `cat ~/bin/build | sed -n "/^[[:blank:]]*function /s/function \([a-z_]*\).*/\1/p" | sort | uniq`; do
+	 if [ "$i" != "buildnum" ] && [ "$i" != "all" ]; then echo "   $i";fi
+	done #| column
 }
 
 function tmr()
 {
 	if [ -z $task ]; then task=task; fi
-    local start_time=$(date +"%s")
-    $@
-    local ret=$?
-    local end_time=$(date +"%s")
-    local tdiff=$(($end_time-$start_time))
-    local hours=$(($tdiff / 3600 ))
-    local mins=$((($tdiff % 3600) / 60))
-    local secs=$(($tdiff % 60))
-    echo
-    if [ $ret -eq 0 ] ; then
-        echo -n "${color_success}#### $task completed successfully "
-    else
-        echo -n "${color_failed}#### $task failed to build some targets "
-    fi
-    if [ $hours -gt 0 ] ; then
-        printf "(%02g:%02g:%02g (hh:mm:ss))" $hours $mins $secs
-    elif [ $mins -gt 0 ] ; then
-        printf "(%02g:%02g (mm:ss))" $mins $secs
-    elif [ $secs -gt 0 ] ; then
-        printf "(%s seconds)" $secs
-    fi
-    echo " ####${color_reset}"
-    echo
-    return $ret
+	local start_time=$(date +"%s")
+	$@
+	local ret=$?
+	local end_time=$(date +"%s")
+	local tdiff=$(($end_time-$start_time))
+	local hours=$(($tdiff / 3600 ))
+	local mins=$((($tdiff % 3600) / 60))
+	local secs=$(($tdiff % 60))
+	echo
+	if [ $ret -eq 0 ] ; then
+		echo -n "${color_success}#### $task completed successfully "
+	else
+		echo -n "${color_failed}#### $task failed to build some targets "
+	fi
+	if [ $hours -gt 0 ] ; then
+		printf "(%02g:%02g:%02g (hh:mm:ss))" $hours $mins $secs
+	elif [ $mins -gt 0 ] ; then
+		printf "(%02g:%02g (mm:ss))" $mins $secs
+	elif [ $secs -gt 0 ] ; then
+		printf "(%s seconds)" $secs
+	fi
+	echo " ####${color_reset}"
+	echo
+	return $ret
 };
 function killjack() {
 	jack-admin kill-server &>/dev/null;
@@ -135,7 +135,7 @@ function reposyncf() {
 			if [ -n "$2" ]; then a=b; fi;;
 		r) a=c
 			;;
-        n) comm="$comm -n"; a=b ;;
+		n) comm="$comm -n"; a=b ;;
 		h) for rmf in $rmlist; do if [ "$rmf" != "h" ] && [ "$rmf" != "r" ]; then $echo rm -rf $rmf;fi;done;;
 		*) if [ "$arg" != "r" ]; then opt="$opt $arg "; fi #repo sync --no-tags -j$NOP --force-sync -f $@;
 			if [ -n "$1" ]; then a=b; fi;;
@@ -143,13 +143,13 @@ function reposyncf() {
 	done
 	$echo $comm $opt
 	#secp `pwd`;
-	if [ "$a" != "b" ]; then rm -rf patches/{,*}/apply; else echo not rm; fi
+	if [ "$a" != "b" ]; then $echo rm -rf patches{/,*}/apply; else echo not rm; fi
 };
 function syncall() {
 	dir="aex los RR o slim"
 	for g in $dir
 	do
-	echo -n "${color_success} ========     $g     ====================${color_reset}"
+	echo -n "${color_success} ========	 $g	 ====================${color_reset}"
 	echo ""
 	cd ~/$g;
 	tmr reposyncf $2;
@@ -171,14 +171,16 @@ function sideload() {
 	fi;fi;fi
 };
 function flashzip() {
-	if [ -n "`ls output/*.md5sum`" ] && [ -z $1 ];
-		then filezip=$(echo `ls output/*.md5sum -t | sed -e 's/.md5sum//g'` | cut -d' ' -f1);
-	elif [ -n $1 ]; then
+	if [ -n "$1" ]; then
 		filezip=$1;
 	else
-		echo "flash zip now?";
-		read -r -t 60 filezip || exit
-	fi
+		if [ -n "`ls output/*.md5sum`" ];
+			then filezip=$(echo `ls output/*.md5sum -t | sed -e 's/.md5sum//g'` | cut -d' ' -f1);
+		else
+			echo "flash zip now?";
+			read -r -t 60 filezip || exit
+		fi;
+	fi;
 	if [ -e $filezip ]; then
 		sideload;
 		$echo adb sideload $filezip;
@@ -190,24 +192,24 @@ function flashzip() {
 };
 function flashapk() {
 	adb remount;
-    for apk in $@
-    do
-    if [ -z $apk ];then read -r apk; fi
-    if [ -d output/system/priv-app/$apk ]; then path="priv-";
-    elif [ -d output/system/app/$apk ]; then path="";
-    fi
-    $echo adb push output/system/$path\app/$apk/$apk.apk /system/$path\app/$apk/$apk.apk;
-    done;
-    read -r -t 10 rb || exit;
-    if [ "$rb" == "y" ]; then adb reboot; fi
+	for apk in $@
+	do
+	if [ -z $apk ];then read -r apk; fi
+	if [ -d output/system/priv-app/$apk ]; then path="priv-";
+	elif [ -d output/system/app/$apk ]; then path="";
+	fi
+	$echo adb push output/system/$path\app/$apk/$apk.apk /system/$path\app/$apk/$apk.apk;
+	done;
+	read -r -t 10 rb || exit;
+	if [ "$rb" == "y" ]; then adb reboot; fi
 };
 function flashimg() {
-    if [ -e $2 ]; then img=$2; else
+	if [ -e $2 ]; then img=$2; else
 	img=output/$1.img; fi
 	if [ ! -e $img ]; then read -r img; fi
 	if [ -e $img ]; then
 	adb reboot bootloader;
-	if [ "$3" != "" ]; then	$echo fastboot flash $1 $img; fi
+	if [ "$3" != "" ]; then $echo fastboot flash $1 $img; fi
 	$echo fastboot boot $img;
 	fi;
 };
@@ -218,22 +220,19 @@ function flashrec() {
 	flashimg recovery $1 $2
 };
 function all() {
-	if [ "$crom" == "aosp" ] || [ "$crom" == "aex" ]; then fmka=moka; else fmka=mka;fi
+	if [ -z `which mka` ]; then fmka=moka; else fmka=mka;fi
 	case $1 in
-	omx) cd op || exit; rmrf libstagefright;cd -; $fmka libstagefright_omx libstagefright_omx_32 libstagefright libstagefright_32 libstagefrighthw libstagefrighthw_32;
-	if [ $? == 0 ]; then
-	adb remount;
-	adb push output/system/lib/libstagefright_omx.so /system/lib;
-	adb push output/system/lib64/libstagefright_omx.so /system/lib64;
-	adb push output/system/lib/libstagefright.so /system/lib;
-	adb push output/system/lib64/libstagefright.so /system/lib64;
-	adb push output/system/lib/libstagefrighthw.so /system/lib;
-	adb push output/system/lib64/libstagefrighthw.so /system/lib64;
-	adb reboot; fi;;
 	s) jack-admin start-server;;
 	*) $fmka $@; killjack;;
 esac;
 };
+function patchfl() {
+	local base=~/havoc;
+	local patchbase=$base/patches;
+	local lcfl=`echo $(pwd) | sed -e 's/\/home\/ksrt12\/havoc\///g' | sed -e 's/\//_/g'`;
+	$echo git am -3 $patchbase/$lcfl/*.patch;
+};
+
 #clear;
 function b()
 {
@@ -247,15 +246,16 @@ case $1 in
 			eng) all otapackage;;
 			*) $2; $3; $4; $5; $6; $7; $8; $9;;
 		esac;;
-    fz) flashzip $2;;
+	fz) flashzip $2;;
 	ra) tmr syncall;;
 	r) if [ -d .repo ]; then tmr reposyncf $@; else echo "Cannot find .repo"; fi;;
-    i) b installclean;;
+	i) b installclean;;
 	c) b i; b;;
-    info) echo `cat .localconfig`;;
+	p) patchfl;;
+	info) echo `cat .localconfig`;;
 	*)		findconfig;
 			. bu*/en*; T=`gettop`; # export LANG=C;
-			if [ -n "$1" ] || ([ "$crom" == "aosp" ] && ([ ! -d vendor/syberia ] && [ ! -d vendor/havoc ])); then
+			if [ -n "$1" ] || [ "$rom" == "aosp" ]; then
 				lunch $name-$type;
 				if [ "$1" == "d" ]; then development/scripts/stack;
 				else
@@ -267,7 +267,7 @@ case $1 in
 				aex) lunch $name-$type; tmr mka aex;;
 				*) echo "brunch $LDEV"; brunch $dev $LOGD;;
 				esac
-    if [ $? -eq 0 ] ; then buildnum; fi;
+	if [ $? -eq 0 ] ; then buildnum; fi;
 			fi; killjack; killjava;;
 esac;
 }

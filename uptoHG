@@ -2,9 +2,13 @@
 case $1 in
 	*cherryplus*) dev=cherryplus;;
 	*gemini*) dev=gemini;;
+	*capricorn*) dev=capricorn;;
+	*romiteWebView*) dev=arm64;;
 esac
 case $1 in
 	*yberia*) rom=syberia;;
 	*avoc*) rom=havoc;;
+	*kernel*) rom=kernel;;
+	*romiteWebView*) rom=BromiteWebView;;
 esac
 $echo rsync --progress -e ssh $1 ksrt12@frs.sourceforge.net:/home/frs/project/havoc-gemini/$rom/$dev/

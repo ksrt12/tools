@@ -2,5 +2,5 @@
 echo 23 <&/dev/null;
 while [ $? != 0 ]
 do
-axel -n $@
+axel -kNa -T 20 -n $@
 done

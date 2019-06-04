@@ -1,0 +1,8 @@
+#!/bin/bash
+b="$1"
+
+if [ $b -gt "976" ]; then nb=976;
+elif [ $b -lt "0" ]; then nb=0;
+else nb=$b;fi
+
+echo sudo tee /sys/class/backlight/intel_backlight/brightness <<< $nb

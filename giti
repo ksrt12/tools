@@ -13,6 +13,10 @@ function commsg() {
 	$echo git commit -sS -m "$commitmsg"
 }
 
+function edate() {
+git commit --amend --no-edit --date="$1 $2"
+};
+
 case $1 in
 	ch) git cherry-pick -sS $2 $3 $4;;
 	am) git am -3 $2;;
@@ -20,7 +24,8 @@ case $1 in
 	ra) git remote add $2 $3;;
 	c) commsg $@;;
 	a) rm -rf *.patch; git add .; git commit -S --signoff --amend;;
-	*now) git commit --amend --no-edit --date=now;;
+	*now) edate now;;
+	date) edate "$3 $4";;
 	f) git fetch --tags caf;;
 	p) commsg $@; git format-patch -$2;;
 esac
