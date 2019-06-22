@@ -74,6 +74,8 @@ if [ -d build ] && [ -e Android.bp ] && [ -e Makefile ]; then
 		echo "${color_failed} Fatal error: var list is empty! Enter vasr manually by running 'findconfig'";
 		sleep 5;exit 5;
 	fi;
+else
+echo "Not in ROM path";
 fi
 };
 

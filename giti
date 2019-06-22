@@ -18,7 +18,12 @@ git commit --amend --no-edit --date="$1 $2"
 };
 
 case $1 in
-	ch) git cherry-pick -sS $2 $3 $4;;
+	ch)
+		case $2 in
+		*con|*continue) git cherry-pick --continue;;
+		*abort) git cherry-pick --abort;;
+		*) git cherry-pick -sS $2 $3 $4;;
+		esac;;
 	am) git am -3 $2;;
 	m) git merge --signoff $2;;
 	ra) git remote add $2 $3;;

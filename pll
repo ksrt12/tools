@@ -5,7 +5,8 @@
 case $1 in
 	*googlesource*|AOSP|aosp)
 		repo="$AOSP";
-		TAG=android-9.0.0_$3;;
+	if [ $3 == "pie-gsi" ]; then TAG=pie-gsi;
+	else TAG=android-9.0.0_$3; fi ;;
 	*codeaurora*|CAF|caf)
 		repo="$CAF";
 		TAG=LA.UM.7.5.$3-8x96.0;;
