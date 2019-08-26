@@ -9,7 +9,7 @@ case $1 in
 	else TAG=android-9.0.0_$3; fi ;;
 	*codeaurora*|CAF|caf)
 		repo="$CAF";
-		TAG=LA.UM.7.5.$3-8x96.0;;
+		TAG=$3;;
 esac;
 case $2 in
 	auto) proj=$(echo `pwd` | sed -e 's/\/home\/ksrt12\/havoc\///');;

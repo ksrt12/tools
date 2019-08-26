@@ -8,6 +8,10 @@ if [ -z $T ]; then T=`pwd`; fi
 if [ -z "${USE_NINJA}" ]; then USE_NINJA=true; else LOGD="| tee logs/$n.log"; fi
 NOP=$(nproc --all)
 
+function nirp() {
+	echo "${color_failed}Not in ROM path${color_reset}"
+	sleep 5;exit;
+}
 function secp() {
 	local mkf=`pwd`/build/core/version_defaults.mk
 	if [ -e $mkf ]; then
@@ -49,8 +53,9 @@ function toolchains_links()
 	done
 };
 function rme() {
+	if [ -e .bashrc ]; then nirp; else
 	if [ -n "`find . -maxdepth 1 -empty`" ]; then
-	find . -maxdepth 1 -empty | xargs rm -r ; fi
+	find . -maxdepth 1 -empty | xargs rm -r ; fi; fi
 };
 function findconfig() {
 if [ -d build ] && [ -e Android.bp ] && [ -e Makefile ]; then
@@ -75,7 +80,7 @@ if [ -d build ] && [ -e Android.bp ] && [ -e Makefile ]; then
 		sleep 5;exit 5;
 	fi;
 else
-echo "Not in ROM path";
+nirp
 fi
 };
 
@@ -130,7 +135,7 @@ function moka() {
 };
 function reposyncf() {
 	local opt=""; local rmlist=$@;
-	local comm="repo sync -c -j$NOP -f --force-sync --no-clone-bundle --no-tags --prune"
+	local comm="repo sync -c -j$NOP -q -f --force-sync --no-clone-bundle --no-tags --prune --no-repo-verify"
 	for arg in $@; do
 	case $arg in
 		-t|t) local comm="repo --trace sync -l --no-tags " #$2 $3 $4 $5 $6 $7 $8 $9;
