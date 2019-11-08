@@ -43,7 +43,8 @@ function buildnum() {
 };
 function toolchains_links()
 {
-	local gccl=prebuilts/gcc/linux-x86
+	local gccl=prebuilts/gcc/linux-x86;
+	local my64=aarch64-ksrt12-linux-android;
 	for j in arm aarch64
 	do
 	 mkdir -p $gccl/$j
@@ -51,6 +52,7 @@ function toolchains_links()
 	  if [ ! -d "$gccl/$j/$(basename $p)" ]; then ln -sf ~/UBERTC/out/$(basename $p) $gccl/$j/$(basename $p);fi;
 	 done
 	done
+	if [ ! -d "out/soong/ndk/sysroot/usr/include/$my64" ]; then ln -sf /home/ksrt12/new/x-tools/$my64/$my64/sysroot/usr/include/aarch64-linux-android out/soong/ndk/sysroot/usr/include/$my64; fi
 };
 function rme() {
 	if [ -e .bashrc ]; then nirp; else
@@ -76,7 +78,7 @@ if [ -d build ] && [ -e Android.bp ] && [ -e Makefile ]; then
 		export LDEV=$dev;
 		export LROM=$rom;
 	else
-		echo "${color_failed} Fatal error: var list is empty! Enter vasr manually by running 'findconfig'";
+		echo "${color_failed} Fatal error: var list is empty! Enter vars manually by running 'findconfig'";
 		sleep 5;exit 5;
 	fi;
 else
@@ -135,9 +137,10 @@ function moka() {
 };
 function reposyncf() {
 	local opt=""; local rmlist=$@;
-	local comm="repo sync -c -j$NOP -q --force-sync --no-clone-bundle --no-tags --prune --no-repo-verify"
+	local comm="repo sync -c -j$NOP --force-sync --no-clone-bundle --no-tags --prune --no-repo-verify"
 	for arg in $@; do
 	case $arg in
+		q) comm="$comm -q";;
 		-t|t) local comm="repo --trace sync -l --no-tags " #$2 $3 $4 $5 $6 $7 $8 $9;
 			if [ -n "$2" ]; then a=b; fi;;
 		r) a=c
@@ -192,7 +195,7 @@ function flashzip() {
 		sideload;
 		$echo adb sideload $filezip;
 		adb wait-\for-recovery;
-		adb reboot;
+#		adb reboot;
 	else
 		echo "${color_failed} файл $filezip не найден!  ${color_reset}";
 	fi

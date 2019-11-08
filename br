@@ -1,8 +1,23 @@
 #!/bin/bash
-b="$1"
+max=976;
+min=0;
+file=/sys/class/backlight/intel_backlight/brightness;
+function setbr() {
+if [ "$1" -gt "$max" ]; then nb=$max;
+elif [ "$1" -lt "$min" ]; then nb=$min;
+else nb="$1";fi
+};
+if [ -z "$1" ]; then
+tmp=`cat $file`;
+new=$(($tmp+150));
+if [ $new -gt $max ]; then setbr 1;
+else setbr $new; fi
 
-if [ $b -gt "976" ]; then nb=976;
-elif [ $b -lt "0" ]; then nb=0;
-else nb=$b;fi
 
-echo sudo tee /sys/class/backlight/intel_backlight/brightness <<< $nb
+else
+val=$(($max*$1/100))
+setbr $val
+fi
+
+#echo $nb
+$echo sudo tee $file <<< $nb
