@@ -1,0 +1,64 @@
+#!/bin/bash
+
+function installmin() {
+sudo apt install autoconf automake gcc-9-multilib axel bc binutils-aarch64-linux-gnu bison brotli build-essential ccache curl flex git \
+gnupg gperf imagemagick libncurses-dev libncurses6 lib32z-dev libgl1-mesa-dev libxml2-utils maven meld openjdk-8-jdk p7zip-full \
+policycoreutils-python-utils python-networkx python-pip qt4-qmake qt5-qmake schedtool squashfs-tools texinfo xsltproc libtinfo5 \
+libssl-dev qt5-default gparted mercurial libtool subversion python3-distutils python3-dev libpng-dev libmpfr-dev libncurses5 gconf2-common \
+#ffmpeg ffmpegthumbnailer vlc
+}
+
+function iunetbootin() {
+sudo add-apt-repository ppa:gezakovacs/ppa
+sudo apt-get install unetbootin
+}
+
+function fstab() {
+sudo mkdir -p /mnt/EXT /mnt/ITMO
+sudo bash -c 'cat >> /etc/fstab' <<FSTAB
+UUID=1fa1e4a8-5a99-408b-8f8e-71f80a127266 /mnt/EXT        ext4    defaults        0       2
+UUID=1741DF5A2F451287                     /mnt/ITMO       ntfs-3g uid=ksrt12,gid=users    0       0
+tmpfs                                     /tmp            tmpfs   defaults        0       0
+FSTAB
+}
+
+function adbrules() {
+sudo touch /etc/udev/rules.d/51-android.rules
+sudo bash -c 'cat >> /etc/udev/rules.d/51-android.rules' <<RULES
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0bb4", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0e79", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0502", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0b05", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="413c", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0489", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="091e", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="18d1", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0bb4", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="12d1", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="24e3", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="2116", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0482", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="17ef", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="1004", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="22b8", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0409", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="2080", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0955", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="2257", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="10a9", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="1d4d", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0471", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="04da", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="05c6", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="1f53", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="04e8", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="04dd", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0fce", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0930", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="19d2", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="1bbb", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="2717", MODE="0666"
+RULES
+sudo udevadm control --reload-rules
+}
+

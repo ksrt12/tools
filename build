@@ -45,6 +45,7 @@ function toolchains_links()
 {
 	local gccl=prebuilts/gcc/linux-x86;
 	local my64=aarch64-ksrt12-linux-android;
+	local ndki=out/soong/ndk/sysroot/usr/include;
 	for j in arm aarch64
 	do
 	 mkdir -p $gccl/$j
@@ -52,7 +53,7 @@ function toolchains_links()
 	  if [ ! -d "$gccl/$j/$(basename $p)" ]; then ln -sf ~/UBERTC/out/$(basename $p) $gccl/$j/$(basename $p);fi;
 	 done
 	done
-	if [ ! -d "out/soong/ndk/sysroot/usr/include/$my64" ]; then ln -sf /home/ksrt12/new/x-tools/$my64/$my64/sysroot/usr/include/aarch64-linux-android out/soong/ndk/sysroot/usr/include/$my64; fi
+	if [ ! -d "$ndki/$my64" ]; then ln -sf ~/new/x-tools/$my64/$my64/sysroot/usr/include/aarch64-linux-android $ndki/$my64; fi
 };
 function rme() {
 	if [ -e .bashrc ]; then nirp; else
