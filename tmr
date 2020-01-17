@@ -1,0 +1,29 @@
+#!/bin/bash
+
+color_failed=$'\E'"[0;31m"
+color_success=$'\E'"[0;32m"
+color_reset=$'\E'"[00m"
+
+start_time=$(date +"%s")
+"$@"
+ret=$?
+end_time=$(date +"%s")
+tdiff=$(($end_time-$start_time))
+hours=$(($tdiff / 3600 ));
+mins=$((($tdiff % 3600) / 60));
+secs=$(($tdiff % 60));
+echo
+if [ $ret -eq 0 ] ; then
+	echo -n "${color_success}#### task completed successfully "
+else
+	echo -n "${color_failed}#### task failed to build some targets "
+fi
+if [ $hours -gt 0 ] ; then
+	printf "(%02g:%02g:%02g (hh:mm:ss))" $hours $mins $secs
+elif [ $mins -gt 0 ] ; then
+	printf "(%02g:%02g (mm:ss))" $mins $secs
+elif [ $secs -gt 0 ] ; then
+	printf "(%s seconds)" $secs
+fi
+echo " ####${color_reset}"
+echo

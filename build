@@ -45,6 +45,7 @@ function toolchains_links()
 {
 	local gccl=prebuilts/gcc/linux-x86;
 	local my64=aarch64-ksrt12-linux-android;
+	local my32=arm-ksrt12-linux-androideabi;
 	local ndki=out/soong/ndk/sysroot/usr/include;
 	for j in arm aarch64
 	do
@@ -53,7 +54,10 @@ function toolchains_links()
 	  if [ ! -d "$gccl/$j/$(basename $p)" ]; then ln -sf ~/UBERTC/out/$(basename $p) $gccl/$j/$(basename $p);fi;
 	 done
 	done
-	if [ ! -d "$ndki/$my64" ]; then ln -sf ~/new/x-tools/$my64/$my64/sysroot/usr/include/aarch64-linux-android $ndki/$my64; fi
+	for i in $my32 $my64
+	do
+	 if [ ! -d "$ndki/$i" ]; then ln -sf ~/new/x-tools/$i/$i/sysroot/usr/include/$(echo $i | sed -e 's/ksrt12-//g') $ndki/$i; fi
+	done
 };
 function rme() {
 	if [ -e .bashrc ]; then nirp; else
@@ -97,34 +101,6 @@ echo "Look at the source to view more functions. The complete list is:"
 	done #| column
 }
 
-function tmr()
-{
-	if [ -z $task ]; then task=task; fi
-	local start_time=$(date +"%s")
-	$@
-	local ret=$?
-	local end_time=$(date +"%s")
-	local tdiff=$(($end_time-$start_time))
-	local hours=$(($tdiff / 3600 ))
-	local mins=$((($tdiff % 3600) / 60))
-	local secs=$(($tdiff % 60))
-	echo
-	if [ $ret -eq 0 ] ; then
-		echo -n "${color_success}#### $task completed successfully "
-	else
-		echo -n "${color_failed}#### $task failed to build some targets "
-	fi
-	if [ $hours -gt 0 ] ; then
-		printf "(%02g:%02g:%02g (hh:mm:ss))" $hours $mins $secs
-	elif [ $mins -gt 0 ] ; then
-		printf "(%02g:%02g (mm:ss))" $mins $secs
-	elif [ $secs -gt 0 ] ; then
-		printf "(%s seconds)" $secs
-	fi
-	echo " ####${color_reset}"
-	echo
-	return $ret
-};
 function killjack() {
 	jack-admin kill-server &>/dev/null;
 };
