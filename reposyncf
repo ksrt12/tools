@@ -1,0 +1,19 @@
+#!/bin/bash
+opt=""; rmlist=$@;
+comm="repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --no-repo-verify"
+for arg in $@; do
+case $arg in
+	q) comm="$comm -q";;
+	-t|t) local comm="repo --trace sync -l --no-tags " #$2 $3 $4 $5 $6 $7 $8 $9;
+		if [ -n "$2" ]; then a=b; fi;;
+	r) a=c
+		;;
+	n) comm="$comm -n"; a=b ;;
+	h) for rmf in $rmlist; do if [ "$rmf" != "h" ] && [ "$rmf" != "r" ]; then $echo rm -rf $rmf;fi;done;;
+	*) if [ "$arg" != "r" ]; then opt="$opt $arg "; fi #repo sync --no-tags -j$NOP --force-sync $@;
+		if [ -n "$1" ]; then a=b; fi;;
+esac
+done
+$echo $comm $opt
+#secp `pwd`;
+if [ "$a" != "b" ]; then $echo rm -rf patches{/,*}/apply; else echo not rm; fi
