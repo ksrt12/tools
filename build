@@ -50,10 +50,11 @@ function toolchains_links()
 	for j in arm aarch64
 	do
 	 mkdir -p $gccl/$j
-	 for p in `ls /home/ksrt12/UBERTC/out/$j* -d`; do
-	  if [ ! -d "$gccl/$j/$(basename $p)" ]; then ln -sf ~/UBERTC/out/$(basename $p) $gccl/$j/$(basename $p);fi;
+	 for p in `ls /home/ksrt12/new/x-tools/$j* -d`; do
+	  if [ ! -d "$gccl/$j/$(basename $p)-9.2" ]; then ln -sf /home/ksrt12/new/x-tools/$(basename $p) $gccl/$j/$(basename $p)-9.2;fi;
 	 done
 	done
+	mkdir -p $ndki
 	for i in $my32 $my64
 	do
 	 if [ ! -d "$ndki/$i" ]; then ln -sf ~/new/x-tools/$i/$i/sysroot/usr/include/$(echo $i | sed -e 's/ksrt12-//g') $ndki/$i; fi
