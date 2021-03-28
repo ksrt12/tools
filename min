@@ -3,9 +3,9 @@
 function installmin() {
 sudo apt install autoconf automake gcc-9-multilib axel bc binutils-aarch64-linux-gnu bison brotli build-essential ccache curl flex git \
 gnupg gperf imagemagick libncurses-dev libncurses6 lib32z-dev libgl1-mesa-dev libxml2-utils maven meld openjdk-8-jdk p7zip-full \
-policycoreutils-python-utils python-networkx python-pip qt4-qmake qt5-qmake schedtool squashfs-tools texinfo xsltproc libtinfo5 \
+policycoreutils-python-utils qt5-qmake schedtool squashfs-tools texinfo xsltproc libtinfo5 \
 libssl-dev qt5-default gparted mercurial libtool subversion python3-distutils python3-dev libpng-dev libmpfr-dev libncurses5 gconf2-common \
-#ffmpeg ffmpegthumbnailer vlc
+ffmpeg ffmpegthumbnailer vlc
 }
 
 function iunetbootin() {

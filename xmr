@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ -z "$khw_id" ]; then khw_id=32b393b; fi
+if [ -n "$1" ]; then num=$1; else num=$((`nproc` - 2));fi
+sudo /home/ksrt12/xmrig/build/xmrig --coin monero --url xmr.kryptex.network:7000 --user "874CsAXxxTmWddUgkyW8xqHPUeYGYsDKQWhQCZKphsHdH4KAR2XAakAP3sCn9qHz5Pbvti8NVYQJR1BaxmruQ3KDPHQqXVY.v2$khw_id" -p x --retries=2 --retry-pause=2 --threads=$num
