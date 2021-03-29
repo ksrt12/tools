@@ -1,0 +1,3 @@
+#!/bin/bash
+if [ -z "$khw_id" ]; then khw_id=d32b393b; fi
+~/PhoenixMiner_5.5c_Linux/PhoenixMiner -coin eth -pool "eth.kryptex.network:8888" -wal "0xbaef4a87e8a92ad5911bc5b0a2a02ed9867c0124/v2$khw_id" -pass "" -rmode 1 -cdm 0

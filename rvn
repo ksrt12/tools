@@ -1,0 +1,4 @@
+#!/bin/bash
+if [ -z "$khw_id" ]; then khw_id=d32b393b; fi
+if [ -z "$1" ]; then coin=kawpow; else coin=$1; fi
+~/NBMiner_Linux/nbminer -a $coin -o "stratum+tcp://rvn.kryptex.network:7000" -u "RRrPSJ7C8up3LW8a11jwVNzgqPX7F27AjM.v2$khw_id:xxxxxx"
