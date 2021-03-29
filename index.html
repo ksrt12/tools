@@ -1,62 +1,93 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Bash tools">
-<meta name="theme-color" content="#3367D6">
-<style>
-body { padding: 0; font-family: sans-serif; }
-.license-text { background-color: #eeeeee; border-top: 20px solid white; padding: 10px; }
-.bin { color: #43b7fa;}
-</style>
-<link rel="apple-touch-icon" sizes="120x120" href="../icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="../icons/favicon-96x96.png">
-<link rel="icon" type="image/png" sizes="128x128" href="../icons/favicon-128x128.png">
-<link rel="mask-icon" href="../icons/safari-pinned-tab.svg" color="#5bbad5">
-<title>Bash tools</title>
-<base target="_blank">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Bash tools">
+    <meta name="theme-color" content="#3367D6">
+    <style>
+        body {
+            padding: 0;
+            font-family: sans-serif;
+        }
+        
+        div {
+            padding-right: 10px;
+            display: inline-block;
+            vertical-align: top;
+        }
+        
+        .license-text {
+            background-color: #eeeeee;
+            padding: 10px;
+        }
+        
+        .bin {
+            color: #43b7fa;
+        }
+    </style>
+    <link rel="apple-touch-icon" sizes="120x120" href="../icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="../icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="../icons/favicon-128x128.png">
+    <link rel="mask-icon" href="../icons/safari-pinned-tab.svg" color="#5bbad5">
+    <title>Bash tools</title>
+    <base target="_blank">
 </head>
 
 <body>
-	<p class="license-text">List of common bash scripts and binary files</p>
-    <ul>
-        <li><a href="ac">ac</a></li>
-        <li><a href="adb" class="bin">adb (bin)</a></li>
-        <li><a href="alld">alld</a></li>
-        <li><a href="ax">ax</a></li>
-        <li><a href="br">br</a></li>
-        <li><a href="build">build</a></li>
-        <li><a href="cimg">cimg</a></li>
-        <li><a href="date">date</a></li>
-        <li><a href="dif">dif</a></li>
-        <li><a href="dmde">dmde</a></li>
-        <li><a href="dmi">dmi</a></li>
-        <li><a href="fastboot" class="bin">fastboot (bin)</a></li>
-        <li><a href="fs">fs</a></li>
-        <li><a href="gerrit-cherry-pick">gerrit-cherry-pick</a></li>
-        <li><a href="giti">giti</a></li>
-        <li><a href="killapp">killapp</a></li>
-        <li><a href="lz4demo" class="bin">lz4demo (bin)</a></li>
-        <li><a href="min">min</a></li>
-        <li><a href="pll">pll</a></li>
-        <li><a href="psh">psh</a></li>
-        <li><a href="readb">readb</a></li>
-        <li><a href="repo">repo</a></li>
-        <li><a href="reposyncf">reposyncf</a></li>
-        <li><a href="resync">resync</a></li>
-        <li><a href="rmrf">rmrf</a></li>
-        <li><a href="sdat2img.py">sdat2img.py</a></li>
-        <li><a href="sign">sign</a></li>
-        <li><a href="simg2img" class="bin">simg2img (bin)</a></li>
-        <li><a href="st">st</a></li>
-        <li><a href="system-up">system-up</a></li>
-        <li><a href="tmr">tmr</a></li>
-        <li><a href="uptoHG">uptoHG</a></li>
-        <li><a href="xmr">xmr miner</a></li>
-    </ul>
+    <div>
+        <p class="license-text">Common bash scripts</p>
+        <ul>
+            <li><a href="ac">ac</a></li>
+            <li><a href="alld">alld</a></li>
+            <li><a href="ax">ax</a></li>
+            <li><a href="br">br</a></li>
+            <li><a href="build">build</a></li>
+            <li><a href="cimg">cimg</a></li>
+            <li><a href="date">date</a></li>
+            <li><a href="dif">dif</a></li>
+            <li><a href="dmde">dmde</a></li>
+            <li><a href="dmi">dmi</a></li>
+            <li><a href="fs">fs</a></li>
+            <li><a href="gerrit-cherry-pick">gerrit-cherry-pick</a></li>
+            <li><a href="giti">giti</a></li>
+            <li><a href="killapp">killapp</a></li>
+            <li><a href="min">min</a></li>
+            <li><a href="pll">pll</a></li>
+            <li><a href="psh">psh</a></li>
+            <li><a href="readb">readb</a></li>
+            <li><a href="repo">repo</a></li>
+            <li><a href="reposyncf">reposyncf</a></li>
+            <li><a href="resync">resync</a></li>
+            <li><a href="rmrf">rmrf</a></li>
+            <li><a href="sdat2img.py">sdat2img.py</a></li>
+            <li><a href="sign">sign</a></li>
+            <li><a href="st">st</a></li>
+            <li><a href="system-up">system-up</a></li>
+            <li><a href="tmr">tmr</a></li>
+            <li><a href="uptoHG">uptoHG</a></li>
+        </ul>
+    </div>
+    <div>
+        <p class="license-text">Common binary files</p>
+        <ul>
+            <li><a href="adb" class="bin">adb</a></li>
+            <li><a href="fastboot" class="bin">fastboot	</a></li>
+            <li><a href="lz4demo" class="bin">lz4demo</a></li>
+            <li><a href="simg2img" class="bin">simg2img</a></li>
+        </ul>
+    </div>
+    <div>
+        <p class="license-text">Miners scripts</p>
+        <ul>
+            <li><a href="eth">eth</a></li>
+            <li><a href="rvn">rvn</a></li>
+            <li><a href="xmr">xmr (monero)</a></li>
+        </ul>
+    </div>
 </body>
 
 </html>
