@@ -25,7 +25,7 @@ case $1 in
 		*) git cherry-pick -sS $2 $3 $4;;
 		esac;;
 	am) git am -3 $2;;
-	m) git merge --signoff $2;;
+	m) git merge --signoff --stat -S --log --commit $2;;
 	ra) git remote add $2 $3;;
 	c) commsg $@;;
 	a) rm -rf *.patch; git add .; git commit -S --signoff --amend;;

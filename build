@@ -44,20 +44,21 @@ function buildnum() {
 function toolchains_links()
 {
 	local gccl=prebuilts/gcc/linux-x86;
-	local my64=aarch64-ksrt12-linux-android;
-	local my32=arm-ksrt12-linux-androideabi;
+	local my64=aarch64-linux-android;
+	local my32=arm-linux-androideabi;
 	local ndki=out/soong/ndk/sysroot/usr/include;
 	for j in arm aarch64
 	do
 	 mkdir -p $gccl/$j
-	 for p in `ls /home/ksrt12/new/x-tools/$j* -d`; do
-	  if [ ! -d "$gccl/$j/$(basename $p)-9.2" ]; then ln -sf /home/ksrt12/new/x-tools/$(basename $p) $gccl/$j/$(basename $p)-9.2;fi;
+	 for p in `ls ${HOME}/new/$j* -d`; do
+	  prebpath="$gccl/$j/$(basename $p)"
+	  if [ ! -d $prebpath ]; then ln -sf $p $prebpath;fi;
 	 done
 	done
 	mkdir -p $ndki
 	for i in $my32 $my64
 	do
-	 if [ ! -d "$ndki/$i" ]; then ln -sf ~/new/x-tools/$i/$i/sysroot/usr/include/$(echo $i | sed -e 's/ksrt12-//g') $ndki/$i; fi
+	 if [ ! -d "$ndki/$i" ]; then ln -sf ${HOME}/x-tools/$i/$i/sysroot/usr/include/$i $ndki/$i; fi
 	done
 };
 function rme() {
@@ -191,7 +192,7 @@ function all() {
 	if [ -z `which mka` ]; then fmka=moka; else fmka=mka;fi
 	case $1 in
 	s) jack-admin start-server;;
-	*) $fmka $@; killjack;;
+	*) m $@; killjack;;
 esac;
 };
 function patchfl() {
@@ -199,6 +200,18 @@ function patchfl() {
 	local patchbase=$base/patches;
 	local lcfl=`echo $(pwd) | sed -e 's/\/home\/ksrt12\/havoc\///g' | sed -e 's/\//_/g'`;
 	$echo git am -3 $patchbase/$lcfl/*.patch;
+};
+
+function patchbuild() {
+	for i in `ls $(pwd)/patches/* -d`
+	do
+		fpath=`echo $(basename $i) | sed -e 's/_/\//g'`;
+		if [ -d "$fpath" ]; then
+			cd $fpath; #echo `pwd`;
+			$echo git am -3 $i/*.patch;
+			cd - &>/dev/null;
+		fi
+	done;
 };
 
 #clear;
@@ -219,7 +232,7 @@ case $1 in
 	r) if [ -d .repo ]; then tmr reposyncf $@; else echo "Cannot find .repo"; fi;;
 	i) b installclean;;
 	c) b i; b;;
-	p) patchfl;;
+	p) patchbuild;;
 	info) echo `cat .localconfig`;;
 	*)		findconfig;
 			. bu*/en*; T=`gettop`; # export LANG=C;
