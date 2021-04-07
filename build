@@ -41,24 +41,20 @@ function buildnum() {
 	 if [ ! -e logs/$o ]; then n=1; else n=$((`cat logs/$o` + 1)); fi; echo $n > logs/$o;
 	done;
 };
-function toolchains_links()
-{
-	local gccl=prebuilts/gcc/linux-x86;
-	local my64=aarch64-linux-android;
-	local my32=arm-linux-androideabi;
-	local ndki=out/soong/ndk/sysroot/usr/include;
+function toolchains_links() {
+    local linux86=prebuilts/gcc/linux-x86;
 	for j in arm aarch64
 	do
-	 mkdir -p $gccl/$j
+	 mkdir -p $linux86/$j
 	 for p in `ls ${HOME}/new/$j* -d`; do
-	  prebpath="$gccl/$j/$(basename $p)"
+	  base=$(basename $p);
+	  basendk=$(echo $base | cut -d '-' -f -3);
+	  prebpath=$linux86/$j/$base;
 	  if [ ! -d $prebpath ]; then ln -sf $p $prebpath;fi;
+	  if [ ! -d $p/$basendk/sysroot/usr/include/$basendk ]; then
+	   echo ln -sf $p/$basendk/sysroot/usr/include/$basendk out/soong/ndk/sysroot/usr/include/$basendk
+	  fi
 	 done
-	done
-	mkdir -p $ndki
-	for i in $my32 $my64
-	do
-	 if [ ! -d "$ndki/$i" ]; then ln -sf ${HOME}/x-tools/$i/$i/sysroot/usr/include/$i $ndki/$i; fi
 	done
 };
 function rme() {
