@@ -1,4 +1,4 @@
 #!/bin/bash
 echo $1
 if [ -n "$1" ]; then a=$1; else a=101; fi
-$echo adb connect 192.168.0.$a:5555
+$echo adb connect 192.168.0.$a:40963
