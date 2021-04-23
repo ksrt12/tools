@@ -28,7 +28,7 @@ case $1 in
 	m) git merge --signoff --stat -S --log --commit $2;;
 	ra) git remote add $2 $3;;
 	c) commsg $@;;
-	a) rm -rf *.patch; git add .; git commit -S --signoff --amend;;
+	a) rm -rf *.patch; git add .; git commit -s --amend;;
 	*now) edate now;;
 	date) edate "$3 $4";;
 	f) git fetch --tags caf;;
