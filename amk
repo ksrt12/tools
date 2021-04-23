@@ -1,0 +1,3 @@
+#!/bin/bash
+adndroidmk Android.mk > Android.bp
+mv Android.mk Androidmk
