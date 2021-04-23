@@ -75,7 +75,7 @@ if [ -d build ] && [ -e Android.bp ] && [ -e Makefile ]; then
 	if [ ! -d op ]; then ln -sf out/target/product op; fi
 	name=$rom\_$dev
 	if [ -n "$name" ]; then
-		if [ ! -d device/apps ]; then ln -sf ~/apps device/apps; fi
+		#if [ ! -d device/apps ]; then ln -sf ~/apps device/apps; fi
 		#if [ ! -d vendor/huawei ]; then ln -sf ~/honor/huawei vendor/huawei; fi
 		toolchains_links;
 		export LDEV=$dev;
@@ -102,25 +102,14 @@ echo "Look at the source to view more functions. The complete list is:"
 function killjack() {
 	jack-admin kill-server &>/dev/null;
 };
-function killjava() {
-if [ -n "`ps ax | grep java | grep -v 'grep' | cut -d '?' -f1`" ];then
-	ps ax | grep java | grep -v 'grep' | cut -d '?' -f1 | xargs kill -9
+function kills() {
+    local tokill=`ps ax | grep "$@" | grep -v 'grep' | cut -d '?' -f1`
+if [ -n "$tokill" ];then
+	echo "$tokill" | xargs kill -9
 fi
 };
-function moka() {
-	$echo tmr schedtool -B -n 10 -e ionice -n 7 make -C $T -j$NOP "$@"
-};
-function syncall() {
-	dir="aex los RR o slim"
-	for g in $dir
-	do
-	echo -n "${color_success} ========	 $g	 ====================${color_reset}"
-	echo ""
-	cd ~/$g;
-	tmr reposyncf $2;
-	cd - > /dev/null
-	done
-	echo "-------- total ---------"
+function makes() {
+	$echo tmr schedtool -B -n 10 -e ionice -n 7 make -j$NOP "$@"
 };
 function chkadb() {
 	echo `adb devices | grep -w $1`
@@ -185,7 +174,6 @@ function flashrec() {
 	flashimg recovery $1 $2
 };
 function all() {
-	if [ -z `which mka` ]; then fmka=moka; else fmka=mka;fi
 	case $1 in
 	s) jack-admin start-server;;
 	*) m $@; killjack;;
@@ -201,12 +189,16 @@ function patchfl() {
 function patchbuild() {
 	for i in `ls $(pwd)/patches/* -d`
 	do
-		fpath=`echo $(basename $i) | sed -e 's/_/\//g'`;
-		if [ -d "$fpath" ]; then
-			cd $fpath; #echo `pwd`;
-			$echo git am -3 $i/*.patch;
-			cd - &>/dev/null;
-		fi
+		applied=$i/applied;
+		if [ ! -e $applied ]; then
+			fpath=`echo $(basename $i) | sed -e 's/_/\//g'`;
+			if [ -d "$fpath" ]; then
+				cd $fpath;
+				git am -3 $i/*.patch;
+				cd - &>/dev/null;
+				touch $applied;
+			fi
+		fi;
 	done;
 };
 
@@ -224,14 +216,14 @@ case $1 in
 			*) $2; $3; $4; $5; $6; $7; $8; $9;;
 		esac;;
 	fz) flashzip $2;;
-	ra) tmr syncall;;
-	r) if [ -d .repo ]; then tmr reposyncf $@; else echo "Cannot find .repo"; fi;;
+	r) tmr reposyncf $@;;
 	i) b installclean;;
 	c) b i; b;;
 	p) patchbuild;;
 	info) echo `cat .localconfig`;;
 	*)		findconfig;
-			. bu*/en*; T=`gettop`; # export LANG=C;
+			. bu*/en*; T=`gettop`;
+			patchbuild;
 			if [ -n "$1" ] || [ "$rom" == "aosp" ]; then
 				lunch $name-$type;
 				if [ "$1" == "d" ]; then development/scripts/stack;
