@@ -194,6 +194,7 @@ function patchbuild() {
 			fpath=`echo $(basename $i) | sed -e 's/_/\//g'`;
 			if [ -d "$fpath" ]; then
 				cd $fpath;
+				echo "$fpath:";
 				git am -3 $i/*.patch;
 				cd - &>/dev/null;
 				touch $applied;
@@ -212,7 +213,7 @@ case $1 in
 		case $2 in
 			set) #nothing
 				;;
-			eng) all otapackage;;
+			ota) all otapackage;;
 			*) $2; $3; $4; $5; $6; $7; $8; $9;;
 		esac;;
 	fz) flashzip $2;;
@@ -237,7 +238,7 @@ case $1 in
 				*) echo "brunch $LDEV"; brunch $dev $LOGD;;
 				esac
 	if [ $? -eq 0 ] ; then buildnum; fi;
-			fi; killjack; killjava;;
+			fi; killjack;;
 esac;
 }
 function operat() {

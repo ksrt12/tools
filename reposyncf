@@ -17,5 +17,5 @@ esac
 done
 $echo $comm $opt
 #secp `pwd`;
-if [ "$a" != "b" ]; then $echo rm -rf patches{/,*}/applied; else echo not rm; fi
+if [ "$a" != "b" ]; then $echo rm -rf patches/*/applied; else echo not rm; fi
 else echo "Cannot find .repo"; fi
