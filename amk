@@ -1,3 +1,11 @@
 #!/bin/bash
-adndroidmk Android.mk > Android.bp
-mv Android.mk Androidmk
+case $1 in
+	r|revert)
+		mv Android.bp Androidbp;
+		mv Androidmk Android.mk;
+		;;
+	*)
+		androidmk Android.mk > Android.bp;
+		mv Android.mk Androidmk;
+		;;
+esac
