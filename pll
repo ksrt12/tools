@@ -1,18 +1,21 @@
 #!/bin/bash
 # $1 - repo
-# $2 - project
-# $3 - tag
+# $2 - tag
+# $3 - project
+
 case $1 in
-	*googlesource*|AOSP|aosp)
-		repo="$AOSP";
-	if [ $3 == "pie-gsi" ]; then TAG=pie-gsi;
-	else TAG=android-$3; fi ;;
+	*google*|AOSP|aosp)
+		repo="https://android.googlesource.com/platform";
+		tag=android-$2;
+		;;
 	*codeaurora*|CAF|caf)
-		repo="$CAF";
-		TAG=$3;;
+		repo="https://source.codeaurora.org/quic/la/platform";
+		tag=$2;
+		;;
 esac;
-case $2 in
-	auto) proj=$(echo `pwd` | sed -e 's/\/home\/ksrt12\/havoc\///');;
-	*) proj=$2;;
-esac;
-$echo git pull --signoff --gpg-sign $repo/$proj $TAG;
+if [ -z "$3" ]; then
+	proj=$(echo `pwd` | sed -e 's/\/home\/ksrt12\/havoc\///');
+else
+	proj=$3;
+fi;
+$echo git pull --signoff --gpg-sign --stat --log --commit $repo/$proj $tag;
