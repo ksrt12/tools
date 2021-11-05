@@ -7,6 +7,7 @@ color_reset=$'\E'"[00m"
 if [ -z $T ]; then T=`pwd`; fi
 if [ -z "${USE_NINJA}" ]; then USE_NINJA=true; else LOGD="| tee logs/$n.log"; fi
 NOP=$(nproc --all)
+totalmem=`free -m | grep -oP '\d+' | head -n 1`
 
 function nirp() {
 	echo "${color_failed}Not in ROM path${color_reset}"
@@ -131,7 +132,7 @@ function flashzip() {
 		if [ -n "`ls output/*.md5sum`" ];
 			then filezip=$(echo `ls output/*.md5sum -t | sed -e 's/.md5sum//g'` | cut -d' ' -f1);
 		else
-			echo "flash zip now?";
+			echo "flash $filezip now?";
 			read -r -t 60 filezip || exit
 		fi;
 	fi;
@@ -195,7 +196,11 @@ function patchbuild() {
 			if [ -d "$fpath" ]; then
 				cd $fpath;
 				echo "$fpath:";
-				git am -3 $i/*.patch;
+				if [ -e *.patch ]; then
+					git am -3 $i/*.patch;
+				else 
+					echo empty;
+				fi;
 				cd - &>/dev/null;
 				touch $applied;
 			fi
@@ -204,12 +209,28 @@ function patchbuild() {
 };
 
 #clear;
-function b()
-{
+function initbuild() {
+findconfig; . bu*/en*; mybreakfast;
+}
+function mybreakfast() {
+	if [ -n "$breakfast" ]; then
+		breakfast $dev;
+	else
+		lunch $name-$type;
+	fi
+}
+function mkabacon() {
+	mybreakfast;
+	mka -j$1 bacon;
+}
+function b() {
 rme;
 case $1 in
+	ota) initbuild;
+		ota_from_target_files -v -s /home/ksrt12/havoc/device/xiaomi/raphael/releasetools.py -i $2 output/obj/PACKAGING/target_files_intermediates/havoc_raphael-target_files-eng.ksrt12.zip ota_update.zip
+		;;
 	ini) if [ "$2" == "set" ]; then setconfig $3; fi
-		findconfig; . bu*/en*; lunch $name-$type;
+		initbuild;
 		case $2 in
 			set) #nothing
 				;;
@@ -226,16 +247,25 @@ case $1 in
 			. bu*/en*; T=`gettop`;
 			patchbuild;
 			if [ -n "$1" ] || [ "$rom" == "aosp" ]; then
-				lunch $name-$type;
+				mybreakfast
 				if [ "$1" == "d" ]; then development/scripts/stack;
 				else
 				if [ "$rom" == "aosp" ] && [ -z "$1" ]; then all otapackage; else all $@; fi;
 				fi;
+			elif [ "$1" == "low" ] || [ $totalmem -lt 16384 ]; then
+				low=$(($NOP/2));
+				echo "Total ram is low, reducing threads to $low";
+				mkabacon $low;
 			else
 				case $rom in
 				pa) ./rom-build.sh $dev;;
-				aex) lunch $name-$type; tmr mka aex;;
-				*) echo "brunch $LDEV"; brunch $dev $LOGD;;
+				aex) mybreakfast; tmr mka aex;;
+				*) if [ -n "$brunch" ]; then 
+						echo "brunch $LDEV";
+						brunch $dev $LOGD;
+					else
+						mkabacon $NOP;
+					fi;;
 				esac
 	if [ $? -eq 0 ] ; then buildnum; fi;
 			fi; killjack;;
