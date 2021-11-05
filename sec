@@ -1,0 +1,4 @@
+#!/bin/bash
+# date=$1;
+# desc=$2;
+sed -i "s/[0-9]\{6\}\./$1./g;s/[0-9]\{7\}/$2/g" frameworks/base/core/java/com/android/internal/util/custom/PixelPropsUtils.java
