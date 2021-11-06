@@ -196,7 +196,7 @@ function patchbuild() {
 			if [ -d "$fpath" ]; then
 				cd $fpath;
 				echo "$fpath:";
-				if [ -e *.patch ]; then
+				if [ -n "`ls $i/*.patch`" ]; then
 					git am -3 $i/*.patch;
 				else 
 					echo empty;
