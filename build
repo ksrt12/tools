@@ -253,7 +253,8 @@ case $1 in
 				if [ "$rom" == "aosp" ] && [ -z "$1" ]; then all otapackage; else all $@; fi;
 				fi;
 			elif [ "$1" == "low" ] || [ $totalmem -lt 16384 ]; then
-				low=$(($NOP/2));
+				if [ "$NOP" == "8" ]; then low=6;
+				elif [ "$NOP" == "16" ]; then low=8; fi
 				echo "Total ram is low, reducing threads to $low";
 				mkabacon $low;
 			else

@@ -14,7 +14,7 @@ case $1 in
 		;;
 esac;
 if [ -z "$3" ]; then
-	proj=$(echo `pwd` | sed -e 's/\/home\/ksrt12\/havoc\///');
+	proj=$(echo `pwd` | sed -e 's/\/home\/ksrt12\/havoc\///' | sed -e 's/\qcom\/opensource/qcom-opensource/');
 else
 	proj=$3;
 fi;

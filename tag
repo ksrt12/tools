@@ -28,7 +28,6 @@ external/icu
 external/libcxx
 external/mksh
 external/perfetto
-external/pulse
 external/tinyalsa
 external/tinycompress
 external/toybox
@@ -39,8 +38,13 @@ frameworks/native
 frameworks/opt/net/ims
 frameworks/opt/net/wifi
 frameworks/opt/telephony
+hardware/broadcom/libbt
+hardware/interfaces
+hardware/libhardware
+hardware/nxp/nfc
+hardware/ril
 "
 foriin "build/make" "build";
 foriin "$list";
-foriin "`repo list -r system/ -p`" ;
-foriin "`repo list -r packages/ -p`" ;
+foriin "`repo list -r system/ -p | grep -v 'vendor/'`" ;
+foriin "`repo list -r packages/ -p | grep -v 'vendor/'`" ;
