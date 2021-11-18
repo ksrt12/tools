@@ -1,5 +1,4 @@
 #!/bin/bash
-if [ -d .repo ]; then
 opt=""; rmlist=$@;
 comm="repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --no-repo-verify"
 for arg in $@; do
@@ -18,4 +17,3 @@ done
 $echo $comm $opt
 #secp `pwd`;
 if [ "$a" != "b" ]; then $echo rm -rf patches/*/applied; else echo not rm; fi
-else echo "Cannot find .repo"; fi
