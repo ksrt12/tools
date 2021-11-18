@@ -1,8 +1,9 @@
 #!/bin/bash
 currpath=`pwd`;
-tag=$1;
+if [ "$1" != "0" ]; then tag=$1; fi
+caf=$2;
 
-function foriin() {
+function TagAosp() {
 for i in $1;
 do
 cd $i; echo $i;
@@ -11,7 +12,8 @@ cd $currpath;
 done
 }
 
-list="
+function fullAosp() {
+local list="
 art
 bionic
 build/soong
@@ -40,7 +42,46 @@ frameworks/opt/net/ims
 frameworks/opt/net/wifi
 frameworks/opt/telephony
 "
-foriin "build/make" "build";
-foriin "$list";
-foriin "`repo list -r system/ -p`" ;
-foriin "`repo list -r packages/ -p`" ;
+
+TagAosp "build/make" "build";
+TagAosp "$list";
+TagAosp "`repo list -r system/ -p`" ;
+TagAosp "`repo list -r packages/ -p`" ;
+}
+
+function TagCAF(){
+local_name_list=$3
+local_path=$2
+caf_path=$1
+
+for local_name in $local_name_list;
+do
+full_path=$local_path/$local_name
+cd $full_path; echo $full_path;
+if [ -n "$4" ]; then local_name=""; fi
+$echo pll caf $caf $caf_path/$local_name;
+cd $currpath;
+done
+}
+
+function fullCAF() {
+local list="
+audio-hal/st-hal
+data-ipa-cfg-mgr
+dataservices
+healthd-ext
+thermal-engine
+usb
+"
+
+local list2="
+audio
+display
+media"
+
+TagCAF "hardware/qcom" "hardware/qcom-caf/sm8150" "$list2"
+TagCAF "vendor/qcom-opensource" "vendor/qcom/opensource" "$list"
+}
+
+if [ -n "$tag" ]; then fullAosp; fi
+if [ -n "$caf" ]; then fullCAF; fi
