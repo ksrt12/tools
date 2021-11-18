@@ -1,0 +1,39 @@
+#!/bin/bash
+
+export Changelog=Changelog.txt
+
+if [ -f $Changelog ];
+then
+    rm -f $Changelog
+fi
+
+touch $Changelog
+
+if [ -n $1 ]; then days=$1; else days=10; fi
+
+for i in $(seq $days);
+do
+export After_Date=`date --date="$i days ago" +%F`
+k=$(expr $i - 1)
+export Until_Date=`date --date="$k days ago" +%F`
+echo "====================" >> $Changelog;
+echo "     $Until_Date    " >> $Changelog;
+echo "====================" >> $Changelog;
+echo "$Until_Date";
+while read path;
+do
+    # https://www.cyberciti.biz/faq/unix-linux-bash-script-check-if-variable-is-empty/
+    Git_log=`git --git-dir ./${path}/.git log --after=$After_Date --until=$Until_Date --pretty=tformat:"%h  %s  [%an]" --abbrev-commit --abbrev=7`
+    if [ "${path}" != "kernel/xiaomi/raphael" ]; then
+    if [ ! -z "${Git_log}" ]; then
+    	echo "" >> $Changelog;
+        echo "* ${path}" >> $Changelog;
+        echo "${Git_log}" >> $Changelog;
+    fi
+    fi;
+done < ./.repo/project.list;
+
+echo "" >> $Changelog;
+done
+
+sed -i 's/[/]$//' $Changelog
