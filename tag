@@ -1,13 +1,18 @@
 #!/bin/bash
 currpath=`pwd`;
-if [ "$1" != "0" ]; then tag=$1; fi
+case $1 in
+    0) ;;
+    *platform*) tag=$1;;
+    *) tag=11.0.0_r$1;;
+esac
+
 caf=$2;
 
 function TagAosp() {
 for i in $1;
 do
 cd $i; echo $i;
-$echo pll aosp 11.0.0_r$tag $2;
+$echo pll aosp $tag $2;
 cd $currpath;
 done
 }
