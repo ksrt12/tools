@@ -18,4 +18,4 @@ if [ -z "$3" ]; then
 else
 	proj=$3;
 fi;
-$4 git pull --signoff --gpg-sign --stat --log --commit $repo/$proj $tag;
+$4 git pull --no-edit --signoff --gpg-sign --stat --log --commit $repo/$proj $tag;
