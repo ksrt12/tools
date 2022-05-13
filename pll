@@ -9,13 +9,13 @@ case $1 in
 		tag=android-$2;
 		;;
 	*codeaurora*|CAF|caf)
-		repo="https://source.codeaurora.org/quic/la/platform";
+		repo="https://git.codelinaro.org/clo/la/platform";
 		tag=$2;
 		;;
 esac;
 if [ -z "$3" ]; then
 	proj=$(echo `pwd` | sed -e 's/\/home\/ksrt12\/havoc\///' | sed -e 's/\qcom\/opensource/qcom-opensource/');
 else
-	proj=$3;
+	proj="$3.git/";
 fi;
 $4 git pull --no-edit --signoff --gpg-sign --stat --log --commit $repo/$proj $tag;
