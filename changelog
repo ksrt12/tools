@@ -9,7 +9,7 @@ fi
 
 touch $Changelog
 
-if [ -n $1 ]; then days=$1; else days=10; fi
+if [ -n "$1" ]; then days=$1; else days=10; fi
 
 for i in $(seq $days);
 do
