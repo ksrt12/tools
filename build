@@ -223,6 +223,12 @@ function mkabacon() {
 	mybreakfast;
 	mka -j$1 bacon;
 }
+function gupload() {
+	gdrive upload --parent 1K_vj2QU8SdV8OACvhdJKv_w522PdEoWW $1
+}
+function genurl() {
+	echo "https://drive.google.com/uc?id=$1&export=download"
+}
 function b() {
 rme;
 case $1 in
@@ -242,6 +248,7 @@ case $1 in
 	i) b installclean;;
 	c) b i; b;;
 	p) patchbuild;;
+	u) gupload $2;;
 	info) echo `cat .localconfig`;;
 	*)		findconfig;
 			. bu*/en*; T=`gettop`;
