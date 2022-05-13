@@ -3,6 +3,7 @@ currpath=`pwd`;
 case $1 in
     0) ;;
     *platform*) tag=$1;;
+    *security*) tag=$1;;
     *) tag=11.0.0_r$1;;
 esac
 
@@ -38,13 +39,6 @@ external/perfetto
 external/tinyalsa
 external/tinycompress
 external/toybox
-frameworks/av
-frameworks/base
-frameworks/libs/systemui
-frameworks/native
-frameworks/opt/net/ims
-frameworks/opt/net/wifi
-frameworks/opt/telephony
 hardware/broadcom/libbt
 hardware/interfaces
 hardware/libhardware
@@ -54,6 +48,7 @@ hardware/ril
 
 TagAosp "build/make" "build";
 TagAosp "$list";
+TagAosp "`repo list -r frameworks/ -p | grep -v 'vendor/'`" ;
 TagAosp "`repo list -r system/ -p | grep -v 'vendor/'`" ;
 TagAosp "`repo list -r packages/ -p | grep -v 'vendor/'`" ;
 }
