@@ -17,6 +17,7 @@ echo "Run download lists"
 curl -z \$all https://antifilter.download/list/allyouneed.lst --output \$all
 
 echo "Create temporary sets"
+ipset create vpn_all || true
 ipset destroy -q vpn_all_tmp || true
 ipset create vpn_all_tmp hash:net
 
