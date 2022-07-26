@@ -1,7 +1,7 @@
 #!/bin/sh
 opkg update;
 echo "#### Install packages";
-opkg install luci-app-https-dns-proxy luci-i18n-wireguard-ru luci-i18n-base-ru curl ipset nano-full;
+opkg install luci luci-i18n-wireguard-ru luci-i18n-base-ru curl ipset nano-full htop;
 
 if [ ! -e /etc/init.d/unblock ]; then
 echo "### Add script"
