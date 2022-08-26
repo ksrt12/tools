@@ -1,14 +1,14 @@
 #!/bin/sh
 opkg update;
 echo "#### Install packages";
-opkg install luci luci-i18n-wireguard-ru luci-i18n-base-ru curl ipset nano-full htop;
+opkg install luci luci-i18n-wireguard-ru luci-i18n-base-ru luci-i18n-https-dns-proxy-ru curl ipset nano-full htop;
 
 if [ ! -e /etc/init.d/unblock ]; then
 echo "### Add script"
 cat <<EOF > /etc/init.d/unblock
 #!/bin/sh
 
-dir=/tmp/lst
+dir=/tmp/unblock
 mkdir -p \$dir
 
 all=\$dir/all.lst
@@ -17,7 +17,7 @@ echo "Run download lists"
 curl -z \$all https://antifilter.download/list/allyouneed.lst --output \$all
 
 echo "Create temporary sets"
-ipset create vpn_all || true
+ipset create vpn_all hash:net || true
 ipset destroy -q vpn_all_tmp || true
 ipset create vpn_all_tmp hash:net
 
@@ -115,4 +115,3 @@ fi;
 
 echo "#### Reboot..."
 reboot
-
