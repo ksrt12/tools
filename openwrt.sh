@@ -39,6 +39,8 @@ fi;
 echo "#### Enable cron";
 /etc/init.d/cron enable;
 /etc/init.d/cron start;
+touch /etc/crontabs/root
+echo "0 4 * * * /etc/init.d/unblock" >> /etc/crontabs/root
 
 if [ "`grep 'vpn' /etc/iproute2/rt_tables`" == "" ]; then
 echo "#### Add VPN table";
