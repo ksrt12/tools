@@ -99,7 +99,7 @@ config ipset
 	option match 'dest_net'
 	option family 'ipv4'
 	option storage 'hash'
-	option loadfile '/tmp/lst/all.lst'
+	option loadfile '/tmp/unblock/all.lst'
 
 config rule
 	option name 'Mark-VPN-Subnets'
