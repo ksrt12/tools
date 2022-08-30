@@ -12,9 +12,11 @@ dir=/tmp/unblock
 mkdir -p \$dir
 
 all=\$dir/all.lst
+my=\$dir/my.lst
 
 echo "Run download lists"
 curl -z \$all https://antifilter.download/list/allyouneed.lst --output \$all
+curl -z \$my https://raw.githubusercontent.com/ksrt12/tools/master/my.lst --output \$my
 
 echo "Create temporary sets"
 ipset create vpn_all hash:net || true
@@ -22,7 +24,8 @@ ipset destroy -q vpn_all_tmp || true
 ipset create vpn_all_tmp hash:net
 
 echo "Fill temporary sets"
-cat \$dir/all.lst | xargs -n1 ipset add vpn_all_tmp
+cat \$all | xargs -n1 ipset add vpn_all_tmp
+cat \$my | xargs -n1 ipset add vpn_all_tmp
 
 echo "Swap with real sets"
 ipset swap vpn_all_tmp vpn_all
