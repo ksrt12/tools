@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# This script is used to mount the geesefs filesystem
+bucket="$1"
+mkdir -p /home/$USER/yc-s3/$bucket
+
+geesefs --file-mode=0666 --dir-mode=0777 --uid=1000 $bucket /home/$USER/yc-s3/$bucket
