@@ -1,7 +1,39 @@
 #!/bin/bash
 
 # This script is used to mount the geesefs filesystem
-bucket="$1"
-mkdir -p /home/$USER/yc-s3/$bucket
 
-geesefs --file-mode=0666 --dir-mode=0777 --uid=1000 $bucket /home/$USER/yc-s3/$bucket
+if ! [ -x "$(command -v vault)" ]; then
+  echo 'Error: vault is not installed.' >&2
+  exit 1
+fi
+
+case "$1" in
+    "itmo-dev-storage")
+        bucket="$1"
+        vault_path="yc-development/yandex-csi-s3/$bucket"
+        kv_store="maintenance"
+        ;;
+    "itmo-test-storage")
+        bucket="$1"
+        vault_path="yc-testing/yandex-csi-s3/$bucket"
+        kv_store="maintenance"
+        ;;
+    "itmo-stage-storage")
+        bucket="$1"
+        vault_path="yc-staging/yandex-csi-s3/$bucket"
+        kv_store="maintenance"
+        ;;
+    *)
+        bucket="itmo-prod-$1"
+        kv_store="apps"
+        vault_path="$1/master/yandex-s3"
+        ;;
+esac
+
+mount_dir="/home/$USER/yc-s3/$bucket"
+
+mkdir -p $mount_dir
+
+AWS_ACCESS_KEY_ID="$(vault kv get -mount=$kv_store -field=accessKeyID $vault_path)" \
+AWS_SECRET_ACCESS_KEY="$(vault kv get -mount=$kv_store -field=secretAccessKey $vault_path)" \
+geesefs --file-mode=0666 --dir-mode=0777 --uid=1000 $bucket $mount_dir && echo "Mounted $bucket to $mount_dir"
