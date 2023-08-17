@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 dev=`cat .localconfig | grep "dev=" | cut -d '=' -f 2`
 echo $dev
 rom=RR

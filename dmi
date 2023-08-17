@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if [ -z "$1" ]; then echo "Номер сборки!"; else
 axel -kNa -T 20 -n 10 https://{deac-ams,altushost-swe}.dl.sourceforge.net/project/xiaomi-eu-multilang-miui-roms/xiaomi.eu/MIUI-WEEKLY-RELEASES/$1/xiaomi.eu_multi_HMK20ProMI9TPro_$1_v12-11.zip
 fi

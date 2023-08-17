@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if [ -z "$1" ]; then echo "Usage: cimg <sparse_image_files> (<raw_image_file>)"; else
 if [ -n "$2" ]; then ~/bin/simg2img $1 $2; else ~/bin/simg2img $1 raw.$1;fi
 fi

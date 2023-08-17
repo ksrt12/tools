@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 opt=""; rmlist=$@;
 comm="repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --prune --no-repo-verify"
 for arg in $@; do

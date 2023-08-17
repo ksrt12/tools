@@ -1,2 +1,2 @@
-#!/bin/bash
+#!/usr/bin/env bash
 FAHClient --child /etc/fahclient/config.xml --run-as fahclient --pid-file=/var/run/fahclient.pid --daemon

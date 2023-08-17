@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if [ "$1" != "" ]; then
 for del in $@; do
 for i in `find -name *$del*`; do echo $i; rm -rf $i; done

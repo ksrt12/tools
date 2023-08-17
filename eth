@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if [ -z "$khw_id" ]; then khw_id=d32b393b; fi
 case $1 in
 	exp) coin=exp; wallet=0x6117a692989732e9d2059e0f7bde2fc11878d7ed; port=7000;;

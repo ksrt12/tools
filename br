@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 max=976;
 min=0;
 file=/sys/class/backlight/intel_backlight/brightness;

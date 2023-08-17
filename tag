@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 currpath=`pwd`;
 case $1 in
     0) ;;

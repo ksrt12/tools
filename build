@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 color_failed=$'\E'"[0;31m"
 color_success=$'\E'"[0;32m"

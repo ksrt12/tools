@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 echo 23 <&/dev/null;
 while [ $? != 0 ]
 do
