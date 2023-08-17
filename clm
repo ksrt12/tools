@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+git checkout -b tmp && git branch -D master && git checkout master && git branch -D tmp
