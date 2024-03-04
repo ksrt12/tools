@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+#
+# To use, simply run `digall <domain>` such as:
+#
+#   digall example.com
+#   digall sub.example.com
+#
+# Place this file in your PATH.  Suggest either /usr/local/bin/ or ~/bin
+#
+# Alternatively you can wrap it in a function called `digall` and put in ~/.bashrc
+#
+
+# License:  MIT
+
+declare -rx digall_color_restore='\033[0m'
+declare -rx digall_color_red='\033[0;31m'
+declare -rx digall_color_light_green='\033[1;32m'
+declare -rx digall_color_light_blue='\033[1;34m'
+declare -rx digall_color_light_cyan='\033[1;36m'
+
+if [ -z "$1" ]; then
+  echo -e "${digall_color_red}Error: Please pass domain as first arg${digall_color_restore}"
+else
+  echo -e "${digall_color_light_blue}Queries: (dig +noall +answer '$1' '<type>')...${digall_color_light_cyan}\n"
+
+  for t in SOA NS SPF TXT MX AAAA A; do
+    echo -e "${digall_color_light_green}Querying for $t records...${digall_color_restore}${digall_color_light_cyan}"
+    dig +noall +answer "$1" "${t}"
+    echo -e "${digall_color_restore}"
+  done
+fi
